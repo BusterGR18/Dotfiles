@@ -1,0 +1,211 @@
+#	Laptop SwayWM config file (v1)
+
+#Display(s)
+output eDP-1 pos 0 0 res 1920x1080 scale 1
+
+#Inputs
+#Keyboard
+input * xkb_layout "latam"
+
+#TP
+input "2:7:SynPS/2_Synaptics_TouchPad" {        
+	tap enabled
+        natural_scroll enabled
+	pointer_accel 0.3
+}
+
+
+# Set mod key
+set $mod Mod4
+
+set $laptop 'eDP-1'
+#clamshell
+bindswitch --reload lid:on output $laptop disable
+bindswitch --reload lid:off output $laptop enable
+
+
+#sleep
+exec swayidle -w timeout 300 swaylock timeout 330 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"' before-sleep swaylock
+
+
+#Border Style
+default_border none
+default_floating_border normal
+
+#Hide borders
+hide_edge_borders none
+
+seat seat0 xcursor_theme "capitaine-cursors"
+#exec_always gsettings set org.gnome.desktop.interface cursor-theme "capitaine-cursors"
+
+set $gnome-schema org.gnome.desktop.interface
+exec_always {
+    gsettings set $gnome-schema gtk-theme 'Flat-Remix-GTK-Green'
+    gsettings set $gnome-schema icon-theme 'Flat Remix'
+    gsettings set $gnome-schema cursor-theme 'capitaine-cursors'
+}
+
+
+
+#Terminal
+bindsym $mod+Return exec kitty
+#Dmenu
+bindsym $mod+d exec sgtk-dmenu -c -d 30
+#kill focused window
+bindsym $mod+Shift+q kill
+#Open menu
+bindsym $mod+z exec sgtk-menu -d 30
+
+# Screen brightness controls
+bindsym XF86MonBrightnessUp exec light -A 5
+bindsym XF86MonBrightnessDown exec light -U 5
+
+#Audio Controls
+bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
+bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
+bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
+bindsym XF86AudioMicMute exec pactl set-source-mute @DEFAULT_SOURCE@ toggle
+
+#Notification service
+exec mako --default-timeout 5000
+
+# Start Applications
+bindsym $mod+F2 exec firefox
+bindsym $mod+Shift+e exec nautilus
+bindsym $mod+Shift+d  exec "killall mako; exec notify-send 'restart mako'"
+bindsym $mod+Print exec grim $(xdg-user-dir PICTURES)/Screenshots/$(date +'%Y-%m-%d-%H:%M:%S_Screenshot.png')
+bindsym Print exec grim - | wl-copy
+bindsym $mod+Shift+Print  exec slurp | grim -g - $(xdg-user-dir PICTURES)/Screenshots/Partial/$(date +'%Y-%m-%d-%H:%M:%S_Screenshot.png')
+
+# change focus
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+# move focused window
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+# workspace back and forth (with/without active container)
+workspace_auto_back_and_forth yes
+bindsym $mod+b workspace back_and_forth
+bindsym $mod+Shift+b move container to workspace back_and_forth; workspace back_and_forth
+
+# split orientation
+bindsym $mod+h split h;exec notify-send 'tile horizontally'
+bindsym $mod+v split v;exec notify-send 'tile vertically'
+bindsym $mod+q split toggle
+
+# toggle fullscreen mode for the focused container
+bindsym $mod+f fullscreen toggle
+
+# change container layout (stacked, tabbed, toggle split)
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
+
+# toggle tiling / floating
+bindsym $mod+Shift+space floating toggle
+
+# change focus between tiling / floating windows
+bindsym $mod+space focus mode_toggle
+
+#navigate workspaces next / previous
+bindsym $mod+Ctrl+Right workspace next
+bindsym $mod+Ctrl+Left workspace prev
+
+#Workspaces names
+set $ws1 1
+set $ws2 2
+set $ws3 3
+set $ws4 4
+set $ws5 5
+set $ws6 6
+set $ws7 7
+set $ws8 8
+
+# switch to workspace
+bindsym $mod+1 workspace $ws1
+bindsym $mod+2 workspace $ws2
+bindsym $mod+3 workspace $ws3
+bindsym $mod+4 workspace $ws4
+bindsym $mod+5 workspace $ws5
+bindsym $mod+6 workspace $ws6
+bindsym $mod+7 workspace $ws7
+bindsym $mod+8 workspace $ws8
+
+# Move focused container to workspace
+bindsym $mod+Shift+1 move container to workspace $ws1
+bindsym $mod+Shift+2 move container to workspace $ws2
+bindsym $mod+Shift+3 move container to workspace $ws3
+bindsym $mod+Shift+4 move container to workspace $ws4
+bindsym $mod+Shift+5 move container to workspace $ws5
+bindsym $mod+Shift+6 move container to workspace $ws6
+bindsym $mod+Shift+7 move container to workspace $ws7
+bindsym $mod+Shift+8 move container to workspace $ws8
+
+# Open specific applications in floating mode
+for_window [title="Bluetooth"] floating enable
+for_window [title="Telegram"] floating enable
+for_window [title="File Transfer*"] floating enable
+for_window [class="GParted"] floating enable; border normal
+for_window [class="Lxappearance"] floating enable sticky enable border normal
+for_window [class="Azote"] floating enable; border normal
+for_window [title="Volume Control"] floating enable
+for_window [class="qt5ct"] floating enable sticky enable border normal
+for_window [class="Qtconfig-qt4"] floating enable sticky enable border normal
+
+
+# Resize window (you can also use the mouse for that)
+bindsym $mod+r mode "resize"
+mode "resize" {
+        bindsym h resize shrink width 5 px or 5 ppt
+        bindsym j resize grow height 5 px or 5 ppt
+        bindsym k resize shrink height 5 px or 5 ppt
+        bindsym l resize grow width 5 px or 5 ppt
+
+        # same bindings, but for the arrow keys
+        bindsym Left resize shrink width 10 px or 10 ppt
+        bindsym Down resize grow height 10 px or 10 ppt
+        bindsym Up resize shrink height 10 px or 10 ppt
+        bindsym Right resize grow width 10 px or 10 ppt
+
+        # exit resize mode: Enter or Escape
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+
+
+# reload the configuration file
+bindsym $mod+Shift+c reload
+
+# Triggers logout menu
+bindsym $mod+0 exec wlogout --protocol layer-shell
+
+#Lock Screen
+bindsym $mod+l exec swaylock
+
+#Auto-Start programs
+exec /usr/lib/policykit-1-pantheon/io.elementary.desktop.agent-polkit
+exec ~/.azotebg
+exec /usr/lib/geoclue-2.0/demos/agent
+exec redshift
+
+# Start i3bar to display a workspace bar (plus the system information i3
+bar {
+        swaybar_command waybar
+        ###///font pango:DejaVu Sans Mono 12
+}
+
+
+####################	gaps properties		#######################
+# Set inner/outer gaps
+gaps inner 14
+gaps outer -2
+
+smart_gaps on
+
+smart_borders on

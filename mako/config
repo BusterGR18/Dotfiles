@@ -1,0 +1,10 @@
+font=DejaVu Sans Mono 12
+background-color=#000000
+icons=1
+padding=20
+progress-color=#444444
+text-color=#ffffff
+border-color=#333333
+border-size=2
+border-radius=3
+default-timeout=3000
